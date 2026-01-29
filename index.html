@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RunFlow AI - Smart Running Coach</title>
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="AI-powered running coach with Gemini integration"
+    />
+    <link rel="manifest" href="manifest.json" />
+
+    <!-- iOS Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- AI Toggle Styles -->
+    <style>
+      .ai-toggle-btn {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background: #4caf50;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 20px;
+        font-size: 12px;
+        cursor: pointer;
+        z-index: 1000;
+        box-shadow: 0 0 10px #4caf50;
+        transition: all 0.3s;
+        font-weight: bold;
+      }
+
+      .ai-toggle-btn.off {
+        background: #666;
+        box-shadow: none;
+      }
+
+      .network-status {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        z-index: 1000;
+      }
+
+      .network-status.online {
+        background: #4caf50;
+        box-shadow: 0 0 10px #4caf50;
+      }
+
+      .network-status.offline {
+        background: #ff416c;
+        box-shadow: 0 0 10px #ff416c;
+      }
+
+      .ai-mode-indicator {
+        position: fixed;
+        top: 60px;
+        left: 20px;
+        color: #4caf50;
+        font-size: 11px;
+        z-index: 1000;
+        background: rgba(0, 0, 0, 0.7);
+        padding: 4px 8px;
+        border-radius: 10px;
+        display: none;
+      }
+
+      @media (max-width: 480px) {
+        .ai-toggle-btn {
+          top: 10px;
+          left: 10px;
+          padding: 8px 12px;
+          font-size: 11px;
+        }
+
+        .network-status {
+          top: 10px;
+          right: 10px;
+        }
+      }
+    </style>
+
+    <!-- Prevent screen sleep -->
+    <script>
+      let wakeLock = null;
+      let isRunning = false; // ADD THIS - declare globally
+
+      async function requestWakeLock() {
+        try {
+          if ("wakeLock" in navigator) {
+            wakeLock = await navigator.wakeLock.request("screen");
+            console.log("Screen will stay on");
+
+            wakeLock.addEventListener("release", () => {
+              console.log("Screen lock released");
+            });
+          }
+        } catch (err) {
+          console.log("Wake lock not supported:", err);
+        }
+      }
+
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible" && isRunning) {
+          requestWakeLock();
+        }
+      });
+
+      document.addEventListener("DOMContentLoaded", requestWakeLock);
+    </script>
+  </head>
+  <body>
+    <header>
+      <h1>🏃 RunFlow AI</h1>
+      <div class="subtitle">Powered by Gemini • Smart Running Coach</div>
+    </header>
+
+    <div class="status-card">
+      <div class="metric-label">Distance</div>
+      <div class="metric" id="distance">0.00</div>
+      <div class="metric-label">Kilometers</div>
+    </div>
+
+    <div class="controls">
+      <button id="startBtn"><span>▶️</span> Start Run</button>
+
+      <button id="stopBtn" class="stop-btn" disabled>
+        <span>⏹️</span> Stop
+      </button>
+    </div>
+
+    <button id="voiceBtn" class="voice-btn">
+      <span>🎤</span> Voice Command
+    </button>
+
+    <div class="stats">
+      <div class="stat-box">
+        <div class="stat-value" id="pace">0:00</div>
+        <div class="stat-label">Pace /km</div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-value" id="time">00:00</div>
+        <div class="stat-label">Time</div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-value" id="speed">0.0</div>
+        <div class="stat-label">km/h</div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-value" id="calories">0</div>
+        <div class="stat-label">Calories</div>
+      </div>
+    </div>
+
+    <div class="mic-indicator" id="micIndicator">🎤</div>
+
+    <div class="ai-mode-indicator" id="aiModeIndicator">🤖 AI Mode Active</div>
+
+    <button id="installBtn" class="install-btn">📲 Install App</button>
+
+    <!-- Disable service worker for testing -->
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function (regs) {
+          regs.forEach(function (reg) {
+            reg.unregister();
+          });
+        });
+      }
+    </script>
+
+    <!-- Load config first, then app -->
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+
+    <script>
+      // Show AI mode indicator when AI is active
+      setInterval(() => {
+        const aiMode = localStorage.getItem("runflow_ai_mode") !== "off";
+        const indicator = document.getElementById("aiModeIndicator");
+        if (indicator) {
+          indicator.style.display = aiMode ? "block" : "none";
+        }
+      }, 1000);
+    </script>
+  </body>
+</html>

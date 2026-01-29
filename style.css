@@ -1,0 +1,235 @@
+/* Reset & Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+    sans-serif;
+  -webkit-tap-highlight-color: transparent; /* FIX: Remove tap delay on iOS */
+}
+
+body {
+  background: #000;
+  color: white;
+  min-height: 100vh;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  touch-action: manipulation; /* FIX: Better touch response */
+}
+
+/* Header */
+header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  width: 100%;
+  max-width: 400px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 20px;
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  background: linear-gradient(45deg, #00ff88, #00ccff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  color: #aaa;
+  font-size: 1rem;
+}
+
+/* Status Card */
+.status-card {
+  background: #111;
+  border-radius: 15px;
+  padding: 25px;
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 20px;
+  text-align: center;
+  border: 2px solid #333;
+}
+
+.metric {
+  font-size: 3.5rem;
+  font-weight: bold;
+  color: #00ff88;
+  margin: 10px 0;
+}
+
+.metric-label {
+  color: #888;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* Controls - COMPLETELY REWRITTEN FOR MOBILE */
+.controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  width: 100%;
+  max-width: 400px;
+  margin: 20px 0;
+}
+
+button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 18px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  touch-action: manipulation; /* FIX: Better touch */
+  -webkit-user-select: none;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+
+/* FIX: Active state for mobile feedback */
+button:active {
+  transform: scale(0.95);
+  opacity: 0.8;
+}
+
+button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none; /* FIX: Prevent clicks on disabled */
+}
+
+/* Button Variants */
+.stop-btn {
+  background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+}
+
+.voice-btn {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 20px;
+}
+
+/* Stats Grid */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  width: 100%;
+  max-width: 400px;
+  margin-top: 20px;
+}
+
+.stat-box {
+  background: #111;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #00ccff;
+}
+
+.stat-label {
+  color: #888;
+  font-size: 0.8rem;
+  margin-top: 5px;
+}
+
+/* Microphone Indicator */
+.mic-indicator {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  background: #ff416c;
+  border-radius: 50%;
+  display: none; /* Changed from flex to none */
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  animation: pulse 1.5s infinite;
+  z-index: 9999;
+}
+
+.mic-indicator.active {
+  display: flex; /* Show when active */
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.8;
+  }
+}
+
+/* Install Button */
+.install-btn {
+  margin-top: 20px;
+  background: #333;
+  padding: 10px 20px;
+  border-radius: 25px;
+  display: none;
+}
+
+/* Mobile Responsive */
+@media (max-width: 480px) {
+  .metric {
+    font-size: 2.8rem;
+  }
+
+  button {
+    padding: 16px;
+    font-size: 1rem;
+    min-height: 50px; /* FIX: Easier to tap */
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  .controls {
+    gap: 12px;
+  }
+}
+
+/* GPS Status Indicator */
+.gps-status {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ff416c;
+}
+
+.gps-status.good {
+  background: #00ff88;
+  box-shadow: 0 0 10px #00ff88;
+}
